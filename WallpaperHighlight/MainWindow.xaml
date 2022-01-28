@@ -1,0 +1,182 @@
+﻿<Window x:Class="WallpaperHighlight.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit" 
+        mc:Ignorable="d"
+        Title="Wallpaper boxes" Height="450" Width="800"
+        Icon="icon.ico">
+    <Grid
+        Unloaded="UnloadWindow"
+    >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+        <GroupBox Header="Setup">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Label VerticalAlignment="Center">Box Name:</Label>
+                    <TextBox Grid.Column="1" VerticalAlignment="Center" Grid.ColumnSpan="2" Name="CatNameTxt"></TextBox>
+                </Grid>
+
+                <Grid Grid.Row="1" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Label VerticalAlignment="Center">Box X:</Label>
+                    <TextBox Grid.Column="1" VerticalAlignment="Center" Name="BoxX"></TextBox>
+                </Grid>
+                <Grid Grid.Row="2" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Label VerticalAlignment="Center">Box Y:</Label>
+                    <TextBox Grid.Column="1" VerticalAlignment="Center" Name="BoxY"></TextBox>
+                </Grid>
+                <Grid Grid.Row="3" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Label VerticalAlignment="Center">Box Width:</Label>
+                    <TextBox Grid.Column="1" VerticalAlignment="Center" Name="BoxWidth"></TextBox>
+                </Grid>
+                <Grid Grid.Row="4" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Label VerticalAlignment="Center">Box Height:</Label>
+                    <TextBox Grid.Column="1" VerticalAlignment="Center" Name="BoxHeight"></TextBox>
+                </Grid>
+                <Grid Grid.Row="5" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Label VerticalAlignment="Center">Screen:</Label>
+                    <ComboBox Grid.Column="1" VerticalAlignment="Center" Name="ScreenBox">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Name}"></TextBlock>
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
+                </Grid>
+                <Grid Grid.Row="6" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Label VerticalAlignment="Center">Text:</Label>
+                        <xctk:ColorPicker  VerticalAlignment="Center" Name="TextColorPicker" Grid.Column="1" AvailableColorsSortingMode="HueSaturationBrightness" ></xctk:ColorPicker>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Label VerticalAlignment="Center">Highlight:</Label>
+                        <xctk:ColorPicker  VerticalAlignment="Center" Name="HighlightColorPicker" Grid.Column="1" AvailableColorsSortingMode="HueSaturationBrightness" ></xctk:ColorPicker>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" />
+                            <ColumnDefinition Width="1*" />
+                        </Grid.ColumnDefinitions>
+                        <Label VerticalAlignment="Center">Border:</Label>
+                        <xctk:ColorPicker  VerticalAlignment="Center" Name="BorderColorPicker" Grid.Column="1" AvailableColorsSortingMode="HueSaturationBrightness" ></xctk:ColorPicker>
+                    </Grid>
+                        
+                        
+                </Grid>
+                <Button Grid.Row="7" Grid.ColumnSpan="2" Click="AddOrUpdateBox" Name="AddButton">Add highlight</Button>
+                    
+            </Grid>
+        </GroupBox>
+        <Grid Grid.Column="1">
+            <GroupBox Header="Boxes">
+                <ListBox Name="BoxesList" HorizontalContentAlignment="Stretch" SelectionChanged="BoxesList_SelectionChanged">
+                    <ListBox.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Delete" Name="Delete" Click="DeleteHighlight"></MenuItem>
+                        </ContextMenu>
+                    </ListBox.ContextMenu>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1*" />
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="25" />
+                                    <ColumnDefinition Width="25" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Name}" />
+                                <TextBlock Grid.Column="1" Text="{Binding X}" />
+                                <TextBlock Grid.Column="2" Text="{Binding Y}" />
+                                <TextBlock Grid.Column="3" Text="{Binding Width}" />
+                                <TextBlock Grid.Column="4" Text="{Binding Height}" />
+                                <Grid Grid.Column="5" Background="{Binding TextBrush}"></Grid>
+                                <Grid Grid.Column="6" Background="{Binding BorderBrush}"></Grid>
+                                <Grid Grid.Column="7" Background="{Binding HighlightBrush}"></Grid>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </GroupBox>
+        </Grid>
+        <GroupBox Grid.Row="1" Header="Config" Grid.ColumnSpan="2">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
+                </Grid.ColumnDefinitions>
+                <Button Click="SetWallpaper" Grid.Row="1">Save and set wallpaper</Button>
+                <Button Click="UndoWallpaper">Undo wallpaper</Button>
+                <Button Grid.Column="1" Click="ResetHighlights">Clear Highlights</Button>
+                <Button Grid.Row="1" Grid.Column="1" Click="ToggleGrid">Toggle Grid</Button>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>
