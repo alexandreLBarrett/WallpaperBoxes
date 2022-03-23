@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -144,11 +146,10 @@ namespace WallpaperHighlight
         public WallpaperWrapper() 
         {
             currentWallpaperPath = GetCurrentWallpaperPath();
-            SaveWallpaperToLocal();
-
             HighlightBoxes = LoadHighlightBoxes();
             Screens = LoadScreenInfo();
 
+            SaveWallpaperToLocal();
             GenerateGrid();
         }
 
@@ -201,21 +202,38 @@ namespace WallpaperHighlight
 
         public void ConvertToBitmap()
         {
-            Image img = Image.FromFile(WallpaperPathOriginal);
-
-            int height = (int)SystemParameters.VirtualScreenHeight;
-            int width = (int)SystemParameters.VirtualScreenWidth;
-
-            Bitmap bmp = new Bitmap(width, height);
-            using (Graphics g = Graphics.FromImage(bmp))
+            using (Image img = Image.FromFile(WallpaperPathOriginal))
             {
-                g.DrawImage(img, 0, 0);
+                int height = (int)SystemParameters.VirtualScreenHeight;
+                int width = (int)SystemParameters.VirtualScreenWidth;
+
+                using (Bitmap bmp = new Bitmap(width, height))
+                {
+                    var offset = 0;
+                    using (Graphics g = Graphics.FromImage(bmp))
+                    {
+                        foreach (var screen in Screens)
+                        {
+                            var destRect = new Rectangle(offset, screen.OffsetY, screen.Width, screen.Height);
+                            g.CompositingMode = CompositingMode.SourceCopy;
+                            g.CompositingQuality = CompositingQuality.HighQuality;
+                            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                            g.SmoothingMode = SmoothingMode.HighQuality;
+                            g.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+                            using (var wrapMode = new ImageAttributes())
+                            {
+                                wrapMode.SetWrapMode(WrapMode.Tile);
+                                g.DrawImage(img, destRect, 0, 0, screen.Width, screen.Height, GraphicsUnit.Pixel, wrapMode);
+                            }
+
+                            offset += screen.Width;
+                        }
+                    }
+
+                    bmp.Save(WallpaperPathOriginalBmp);
+                }
             }
-
-            bmp.Save(WallpaperPathOriginalBmp);
-
-            bmp.Dispose();
-            img.Dispose();
         }
 
 
@@ -304,7 +322,9 @@ namespace WallpaperHighlight
             string filename = Directory.GetCurrentDirectory() + "\\" + currentWallpaperPath.Split('\\').Last();
             WallpaperPath = filename;
             WallpaperPathOriginal = EditFilename(filename, "_original");
-            WallpaperPathOriginalBmp = filename.Replace(".jpg", ".bmp");
+
+            var lastDot = filename.LastIndexOf(".");
+            WallpaperPathOriginalBmp = filename.Substring(0, lastDot) + ".bmp";
 
             // Check if file is in this directory
             if (!File.Exists(WallpaperPathOriginal))
@@ -340,7 +360,6 @@ namespace WallpaperHighlight
             }
             return true;
         }
-
         private string EditFilename(string filename, string extension) => filename.Insert(filename.Length - 4, extension);
     }
 }

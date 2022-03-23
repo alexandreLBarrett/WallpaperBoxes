@@ -165,5 +165,11 @@ namespace WallpaperHighlight
         {
             wppw.UnSetGrid();
         }
+
+        private void RecalcFrame(object sender, RoutedEventArgs e)
+        {
+            wppw.ConvertToBitmap();
+            SetWallpaper(sender, e);
+        }
     }
 }

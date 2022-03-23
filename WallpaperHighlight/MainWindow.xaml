@@ -120,11 +120,11 @@
                         <Label VerticalAlignment="Center">Border:</Label>
                         <xctk:ColorPicker  VerticalAlignment="Center" Name="BorderColorPicker" Grid.Column="1" AvailableColorsSortingMode="HueSaturationBrightness" ></xctk:ColorPicker>
                     </Grid>
-                        
-                        
+
+
                 </Grid>
                 <Button Grid.Row="7" Grid.ColumnSpan="2" Click="AddOrUpdateBox" Name="AddButton">Add highlight</Button>
-                    
+
             </Grid>
         </GroupBox>
         <Grid Grid.Column="1">
@@ -175,7 +175,14 @@
                 <Button Click="SetWallpaper" Grid.Row="1">Save and set wallpaper</Button>
                 <Button Click="UndoWallpaper">Undo wallpaper</Button>
                 <Button Grid.Column="1" Click="ResetHighlights">Clear Highlights</Button>
-                <Button Grid.Row="1" Grid.Column="1" Click="ToggleGrid">Toggle Grid</Button>
+                <Grid Grid.Row="1" Grid.Column="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Row="1" Grid.Column="0" Click="ToggleGrid" Margin="0">Toggle Grid</Button>
+                    <Button Grid.Row="1" Grid.Column="1" Click="RecalcFrame" Margin="0">Recalculate Wallpaper Frame</Button>
+                </Grid>
             </Grid>
         </GroupBox>
     </Grid>
