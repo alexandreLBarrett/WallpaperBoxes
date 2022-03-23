@@ -212,6 +212,7 @@ namespace WallpaperHighlight
                     var offset = 0;
                     using (Graphics g = Graphics.FromImage(bmp))
                     {
+                        // Paste scaled wallpaper on every screen
                         foreach (var screen in Screens)
                         {
                             var destRect = new Rectangle(offset, screen.OffsetY, screen.Width, screen.Height);
