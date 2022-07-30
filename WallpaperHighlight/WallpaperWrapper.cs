@@ -73,6 +73,8 @@ namespace WallpaperHighlight
                     int offset = 0;
                     foreach (Screen screen in Screens)
                     {
+                        Font font1 = new Font("Arial", 15);
+
                         int gridWidth = (int)Math.Ceiling(screen.Width / 75f);
                         int gridHeight = (int)Math.Ceiling(screen.Height / 100f);
 
@@ -86,9 +88,6 @@ namespace WallpaperHighlight
                                 int yCoord = screen.OffsetY + y * 100;
 
                                 g.DrawRectangle(borderPen, xCoord, yCoord, 75, 100);
-
-                                Font font1 = new Font("Arial", 15);
-
                                 g.DrawString($"{x},{y}", font1, idxBrush, xCoord, yCoord);
                             }
                         }
@@ -202,11 +201,11 @@ namespace WallpaperHighlight
 
         public void ConvertToBitmap()
         {
+            int height = (int)SystemParameters.VirtualScreenHeight;
+            int width = (int)SystemParameters.VirtualScreenWidth;
+
             using (Image img = Image.FromFile(WallpaperPathOriginal))
             {
-                int height = (int)SystemParameters.VirtualScreenHeight;
-                int width = (int)SystemParameters.VirtualScreenWidth;
-
                 using (Bitmap bmp = new Bitmap(width, height))
                 {
                     var offset = 0;
@@ -215,18 +214,14 @@ namespace WallpaperHighlight
                         // Paste scaled wallpaper on every screen
                         foreach (var screen in Screens)
                         {
-                            var destRect = new Rectangle(offset, screen.OffsetY, screen.Width, screen.Height);
+                            Bitmap scaledImg = new Bitmap(img, new System.Drawing.Size(screen.Width, screen.Height));
+
                             g.CompositingMode = CompositingMode.SourceCopy;
                             g.CompositingQuality = CompositingQuality.HighQuality;
                             g.InterpolationMode = InterpolationMode.HighQualityBicubic;
                             g.SmoothingMode = SmoothingMode.HighQuality;
                             g.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                            using (var wrapMode = new ImageAttributes())
-                            {
-                                wrapMode.SetWrapMode(WrapMode.Tile);
-                                g.DrawImage(img, destRect, 0, 0, screen.Width, screen.Height, GraphicsUnit.Pixel, wrapMode);
-                            }
+                            g.DrawImage(scaledImg, offset, screen.OffsetY, new Rectangle(0, 0, scaledImg.Width, scaledImg.Height), GraphicsUnit.Pixel);
 
                             offset += screen.Width;
                         }

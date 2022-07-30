@@ -33,6 +33,7 @@ namespace WallpaperHighlight
             wppw = new WallpaperWrapper();
             BoxesList.ItemsSource = wppw.HighlightBoxes;
             ScreenBox.ItemsSource = wppw.Screens;
+            ScreenBox.SelectedIndex = 0;
 
             this.Dispatcher.ShutdownStarted += UnloadWindow;
         }
@@ -59,13 +60,22 @@ namespace WallpaperHighlight
             }
         }
 
+        private void ClearForm()
+        {
+            BoxName.Clear();
+            BoxX.Clear();
+            BoxY.Clear();
+            BoxWidth.Clear();
+            BoxHeight.Clear();
+        }
+
         private void AddOrUpdateBox(object sender, RoutedEventArgs e)
         {
             if (BoxesList.SelectedItem != null) // MODIFY
             {
                 HighlightBox toMod = (HighlightBox)BoxesList.SelectedItem;
                 wppw.HighlightBoxes.Remove(toMod);
-                toMod.Name = CatNameTxt.Text.Trim();
+                toMod.Name = BoxName.Text.Trim();
                 toMod.X = int.Parse(BoxX.Text);
                 toMod.Y = int.Parse(BoxY.Text);
                 toMod.Width = int.Parse(BoxWidth.Text);
@@ -82,7 +92,7 @@ namespace WallpaperHighlight
             else // ADD
             {
                 var newBox = new HighlightBox(
-                       CatNameTxt.Text.Trim(),
+                       BoxName.Text.Trim(),
                        int.Parse(BoxX.Text),
                        int.Parse(BoxY.Text),
                        int.Parse(BoxWidth.Text),
@@ -95,8 +105,10 @@ namespace WallpaperHighlight
 
                 if (!wppw.HighlightBoxes.Exists(x => x.Name == newBox.Name))
                     wppw.AddHightlightBox(newBox);
+
             }
             BoxesList.Items.Refresh();
+            ClearForm();
         }
 
         private void UndoWallpaper(object sender, RoutedEventArgs e)
@@ -111,6 +123,10 @@ namespace WallpaperHighlight
 
         private void ResetHighlights(object sender, RoutedEventArgs e)
         {
+            var confirm = MessageBox.Show("Do you really want to wipe all the boxes?\nThis action is definitive.", "", MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+            if (confirm != MessageBoxResult.OK)
+                return;
+
             wppw.HighlightBoxes.Clear();
             wppw.SaveHighlightBoxes();
             BoxesList.Items.Refresh();
@@ -118,14 +134,13 @@ namespace WallpaperHighlight
 
         private void BoxesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-
             if (BoxesList.Items.Count != 0)
             {
                 if (BoxesList.SelectedItem != null)
                 {
                     HighlightBox toMod = (HighlightBox)BoxesList.SelectedItem;
 
-                    CatNameTxt.Text = toMod.Name;
+                    BoxName.Text = toMod.Name;
                     BoxX.Text = toMod.X.ToString();
                     BoxY.Text = toMod.Y.ToString();
                     BoxWidth.Text = toMod.Width.ToString();
